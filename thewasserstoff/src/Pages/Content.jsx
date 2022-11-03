@@ -70,14 +70,15 @@ function Content() {
         setText('Posting ...');
          //the code below specify the required regular expressions to split 
         const regex_ = /[.?;:\n,[)(}{\/-]+/
-        const split_to_task = text_area.split(regex_);
-        const post_ = await ConvertToPost(split_to_task);
+        const split_to_task = text_area.split(regex_);//call the split function in JavaScript to split the regular expressions defined above
+        const post_ = await ConvertToPost(split_to_task);//add more item to text like colo, point/score and id
         console.log({post_});
-        const post_to_string = JSON.stringify(post_);
-        const ide = id == "new"?localStorage.getItem("ide"):id;
-        const sendData = {author,title,author_id:ide,post:post_to_string};
+        const post_to_string = JSON.stringify(post_);//change returned post to string 
+        const ide = id == "new"?localStorage.getItem("ide"):id;//check user id 
+        const sendData = {author,title,author_id:ide,post:post_to_string};//data to send to the backend 
         AxiosConnect.post('/blog/post-blog',sendData)
         .then(result=>{
+          //show result in console
             console.log(result.data);
             alert("Posted :)")
         }).catch(err=>{
