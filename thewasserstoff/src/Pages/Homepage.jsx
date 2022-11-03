@@ -16,8 +16,10 @@ function Homepage() {
                 window.location = `/posts/${result.data.user_details.ide}`;
             }
         }).catch(err=>{
-            console.log(err);
-            alert(err.message)
+            const msg = err.response.data.message;
+            alert(msg);
+            console.log(msg);
+            console.log(err.message);
         })
     }
     return (
