@@ -3,11 +3,13 @@ import {useParams}  from 'react-router-dom'
 import {AxiosConnect} from '../AxiosConnect';
 function Posts() {
   const {id} = useParams();
-  const [if_arr,setIf_arr] = useState(false);
-  const [array,setArray]=useState([])
+  const [if_arr,setIf_arr] = useState(false);//check if the state array is empty or not.
+  const [array,setArray]=useState([])//this state hold the value of user posts
   const getPost = async()=>{
+  //This function is called every time the page loads
     AxiosConnect.post("/blog/user-posts",{user_id:id})
     .then(result=>{
+///this function send request to the backend to to get user posts
       const data = result.data;
       console.log(data.message)
       console.log(data.posts);
@@ -17,7 +19,7 @@ function Posts() {
         setIf_arr(true);
         //console.log({author:data.posts[0].author,title:data.posts[0].title})
         const json = data.posts
-        setArray(json);//arr_ => [...arr_, json]
+        setArray(json);
         console.log(array)
       }
     }).catch(err=>{
@@ -30,9 +32,11 @@ function Posts() {
     })
   }
   const RedirectTo =()=>{
+//this function sets post id as new if user wants to create a new post
     window.location = `/posts/new/content`
   }
   const RedirectToPath =(id)=>{
+  //This function RedirectTo post content 
     window.location = `/posts/${id}/content`;
   }
   useEffect(()=>{
