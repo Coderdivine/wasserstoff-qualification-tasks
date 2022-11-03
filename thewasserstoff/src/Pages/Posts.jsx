@@ -29,27 +29,70 @@ function Posts() {
             console.log(err.message);
     })
   }
-  const RedirectTo =()=>{
-    window.location = `/posts/new/content`
-  }
-  const RedirectToPath =(id)=>{
-    window.location = `/posts/${id}/content`;
-  }
   useEffect(()=>{
    getPost();
   },[]);
     return (
       <div>
-        {if_arr?
+        <a class="bg-blue-400 m-3 py-3 px-7 rounded-lg text-center text-white font-medium" href={`/posts/new/content`}>Create Post</a>
+      
+<section class="antialiased bg-gray-100 text-gray-600 h-screen px-4" x-data="app">
+    <div class="flex flex-col justify-center h-full">
+        <div class="w-full max-w-2xl mx-auto bg-white shadow-lg rounded-sm border border-gray-200">
+            <header class="px-5 py-4 border-b border-gray-100">
+                <div class="font-semibold text-gray-800">Posts</div>
+            </header>
+
+            <div class="overflow-x-auto p-3">
+                <table class="table-auto w-full">
+                    <thead class="text-xs font-semibold uppercase text-gray-400 bg-gray-50">
+                        <tr>
+                            
+                            <th class="p-2">
+                                <div class="font-semibold text-left">Title</div>
+                            </th>
+                            <th class="p-2">
+                                <div class="font-semibold text-left">Author</div>
+                            </th>
+                            <th class="p-2">
+                                <div class="font-semibold text-center">Rate</div>
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="text-sm divide-y divide-gray-100">
+                    {if_arr?
         array !== null && array.length >0 && array.map(x=><div key={x._id}>
-          <p>{x.title}</p>
-          <small>Author: @{x.author}</small><br/>
-          <span>Understanding Level:{x.percentage}</span><br/>
-          <button onClick={RedirectToPath(x.ide)}>Read</button>
+          <tr>
+                            <td class="p-2">
+                                <div class="font-medium text-gray-800">
+                                    {x.title.length>15?x.title.substring(0,15)+"...":x.title}
+                                </div>
+                            </td>
+                            <td class="p-2">
+                                <div class="text-left">@{x.author}</div>
+                            </td>
+                            <td class="p-2">
+                                <div class="text-left font-medium text-green-500">
+                                    R {Math.round(x.percentage)}%
+                                </div>
+                            </td>
+                            <td class="p-2">
+                                <div class="flex justify-center"> 
+                                    <a class="bg-blue-400 m-3 py-3 px-7 rounded-lg text-center text-white font-medium" href={`/posts/${x.ide}/content`}>Read</a>  
+                                </div>
+                            </td>
+                        </tr>
         </div>)
         :<p>No post yet
-          <button onClick={RedirectTo}>Create Post</button></p>}
-        
+          <a href={`/posts/new/content`}>Create Post</a></p>}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
       </div>
     );
   }

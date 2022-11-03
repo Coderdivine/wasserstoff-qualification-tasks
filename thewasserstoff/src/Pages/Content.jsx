@@ -6,7 +6,7 @@ function Content() {
     const[edit,setEdit]=useState(false);
     const [data,setData] =useState(null);
     const state_ = ['UNDERSTAND','SOMEWHAT UNDERSTAND','NOT CLEAR','WHAT RUBBISH'];
-    const[item_id,setItem_id]=useState('');
+    const[item_id,setItem_id]=useState(null);
     const [post_data,setPost_data] = useState(null)
     const {id} = useParams();
     //Post details...
@@ -14,6 +14,8 @@ function Content() {
     const[title,setTitle]=useState("");
     const[post,setPost]=useState([]);
     const[text_area,setText_area]=useState("");
+    const[modal,setModal]=useState(false);
+    const[modal_text,setModal_text]= useState("");
     const getDetails=()=>{
         if( id == "new"){
             setEdit(true);
@@ -26,6 +28,7 @@ function Content() {
             console.log(_data);
              setData(_data);
              setPost_data(JSON.parse(_data.post));
+             console.log(JSON.parse(_data.post))
         }).catch(err=>{
             console.log(err.message);
             setEdit(false);
@@ -49,15 +52,21 @@ function Content() {
             console.log(err);
         })
     }
-    const getId =(id)=>{
+    const getId =(id,text)=>{
         setItem_id(id);
+        setModal_text(text);
+        setModal(true);
     }
     const ConvertToPost=async(arr)=>{
+        const new_arr = [];
         for(let i = 0;i<arr.length;i++ ){
+            console.log({i,arr:arr.length})
             const obj = {score:4,color:"green",text:arr[i],item_id:i};
-            setPost(posts_ => [...posts_, obj]);
+            new_arr.push(obj);
         }
-        return post
+        console.log({new_arr})
+        setPost(new_arr)
+        return new_arr
     }  
     const[text,setText]=useState('Post')
     const Submit=async(e)=>{
@@ -68,8 +77,11 @@ function Content() {
         const post_ = await ConvertToPost(split_to_task);
         console.log({post_});
         const post_to_string = JSON.stringify(post_);
+
         const ide = id == "new"?localStorage.getItem("ide"):id;
         const sendData = {author,title,author_id:ide,post:post_to_string};
+        const newData = post_[Number(item_id)] //= sendData;
+        console.log(newData);
         AxiosConnect.post('/blog/post-blog',sendData)
         .then(result=>{
             console.log(result.data);
@@ -87,7 +99,9 @@ function Content() {
        !edit? <div>
             <div>
                 {post_data && post_data.map((el,index)=><div key={index}>
-                    <div style={{'display':'grid'}}>
+                    {modal?<div>
+                        {modal_text}
+                        <div style={{'display':'grid'}}>
                         <select onChange={(e)=>{
                             const event_ = e.target.value;
                             console.log(event_);
@@ -99,7 +113,8 @@ function Content() {
                                 )}
                         </select>
                     </div>
-                    <span onClick={()=>getId(el.id)} style={{'color':el.color}}>{el.text}</span>
+                    </div>:<div></div>}
+                    <span onClick={()=>getId(el.id,el.text)} style={{'color':el.color}}>{el.text}</span>
                 </div>)}
             </div>
        </div>:<div>
@@ -112,6 +127,11 @@ function Content() {
                 <button onClick={(e)=>Submit(e)}>{text}</button>
             </div>:<div>
                 old
+                 <input placeholder={'Author name'} value={author} onChange={(e)=>setAuthor(e.target.value)} /><br/>
+                <input placeholder={'Title...'} value={title} onChange={(e)=>setTitle(e.target.value)} /><br/>
+                <textarea placeholder={'Content...'} rows={20} value={text_area} onChange={(e)=>setText_area(e.target.value)} /><br/>
+                <button onClick={(e)=>Submit(e)}>{text}</button>
+           
             </div>
         }
         </div>
